@@ -11,8 +11,7 @@ import java.util.List;
 public class BlogPostController {
 
 
-    //          -- AUTENSIERADE ANVÄNDARE --
-
+    //          -- AUTENTISERADE ANVÄNDARE --
     @GetMapping("/posts")
     public ResponseEntity<List<BlogPost>> getAllPosts() {
         return null;
@@ -23,7 +22,7 @@ public class BlogPostController {
         return null;
     }
 
-    //          -- AKTORISERADE ANVÄNDARE - WigellBlog-User --
+    //          -- AUKTORISERADE ANVÄNDARE - WigellBlog-User --
     @PostMapping("/newpost") //TODO Få med SUB in här
     public ResponseEntity<BlogPost> createPost(@RequestBody BlogPost post) {
         return null;
@@ -34,13 +33,13 @@ public class BlogPostController {
         return null;
     }
 
-    //          -- AKTORISERADE ANVÄNDARE - WigellBlog-User/ WigellBlog-Admin --
+    //          -- AUKTORISERADE ANVÄNDARE - WigellBlog-User/ WigellBlog-Admin --
     @DeleteMapping("/deletepost/{id}") //TODO få in sub. Kontrollera rätt användare eller Admin.
     public ResponseEntity<String> deletePost(@PathVariable Long id) {
         return null;
     }
 
-    //          -- AKTORISERADE ANVÄNDARE -  WigellBlog-Admin --
+    //          -- AUKTORISERADE ANVÄNDARE -  WigellBlog-Admin --
     @GetMapping("/count") //TODO ska jag skicka en DAO med Json-format på statistik här?
     public ResponseEntity<Integer> getCount() {
         return null;
