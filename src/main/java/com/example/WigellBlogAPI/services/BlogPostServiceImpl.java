@@ -4,10 +4,8 @@ import com.example.WigellBlogAPI.entities.BlogPost;
 import com.example.WigellBlogAPI.repositories.BlogPostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
+
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -36,14 +34,16 @@ public class BlogPostServiceImpl implements BlogPostService {
 
     @Override
     public BlogPost createBlogPost(BlogPost blogPost, String sub) {
-        validateBlogPost(blogPost);
+        validateCreateBlogPost(blogPost);
         blogPost.setUserId(sub);
         return blogPostRepository.save(blogPost);
     }
 
     @Override
     public BlogPost updateBlogPost(BlogPost blogPost, Jwt jwt) {
-        validateBlogPostForUpdate(blogPost,jwt);
+        validateBlogPostExist(blogPost.getId());
+        validateOwnerOrAdmin(blogPost.getUserId(),jwt);
+
         if (blogPost.getTitle() != null && !blogPost.getTitle().isBlank()){
             blogPost.setTitle(blogPost.getTitle());
         }
@@ -54,8 +54,11 @@ public class BlogPostServiceImpl implements BlogPostService {
     }
 
     @Override
-    public String deleteBlogPost(Long blogPostId, String sub) {
-        return "";
+    public String deleteBlogPost(Long blogPostId, Jwt jwt) {
+        BlogPost postToDelete = validateBlogPostExist(blogPostId);
+        validateOwnerOrAdmin(postToDelete.getUserId(),jwt);
+        blogPostRepository.delete(postToDelete);
+        return "Blog post with id " + blogPostId + " deleted successfully";
     }
 
     @Override
@@ -63,7 +66,7 @@ public class BlogPostServiceImpl implements BlogPostService {
         return "";
     }
 
-    private void validateBlogPost(BlogPost blogPost) {
+    private void validateCreateBlogPost(BlogPost blogPost) {
         if (blogPost.getTitle() == null || blogPost.getTitle().isBlank()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Title cannot be null or blank");
         }
@@ -72,19 +75,19 @@ public class BlogPostServiceImpl implements BlogPostService {
         }
     }
 
-    private void validateBlogPostForUpdate(BlogPost blogPost, Jwt jwt) {
-
+    private void validateOwnerOrAdmin(String blogPostUserId, Jwt jwt) {
         List<String> roles = jwt.getClaim("authorities");
         boolean isAdmin = roles.contains("ROLE_WigellBlog_Admin");
         String sub = jwt.getClaim("sub");
 
         if (!isAdmin) {
-            if (!Objects.equals(blogPost.getUserId(), sub)) {
+            if (!Objects.equals(blogPostUserId, sub)) {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User is not allowed to update blog post");
             }
         }
-        if (blogPostRepository.findById(blogPost.getId()).isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Blog post with id " + blogPost.getId() + " not found");
-        }
+    }
+
+    private BlogPost validateBlogPostExist(Long blogPostId) {
+        return blogPostRepository.findById(blogPostId).orElseThrow(() ->new ResponseStatusException(HttpStatus.NOT_FOUND, "Blog post with id " + blogPostId + " not found"));
     }
 }

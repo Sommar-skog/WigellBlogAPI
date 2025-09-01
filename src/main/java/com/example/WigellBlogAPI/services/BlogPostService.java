@@ -11,7 +11,7 @@ public interface BlogPostService {
     BlogPost getBlogPostById(Long id);
     BlogPost createBlogPost(BlogPost blogPost, String sub);
     BlogPost updateBlogPost(BlogPost blogPost, Jwt jwt);
-    String deleteBlogPost(Long blogPostId, String sub);
+    String deleteBlogPost(Long blogPostId, Jwt jwt);
 
     //DAO?
     String countBlogPostsInSystem();

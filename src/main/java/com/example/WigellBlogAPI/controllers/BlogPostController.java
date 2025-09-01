@@ -38,15 +38,15 @@ public class BlogPostController {
         return null;
     }
 
-    @PutMapping("/updatepost") //TODO Få in SUB så att det blir rätt person som uppdaterar
+    @PutMapping("/updatepost")
     public ResponseEntity<BlogPost> updatePost(@RequestBody BlogPost post, Jwt jwt) {
-        return blogPostService.updateBlogPost(post,jwt);
+        return ResponseEntity.ok(blogPostService.updateBlogPost(post,jwt)) ;
     }
 
     //          -- AUKTORISERADE ANVÄNDARE - WigellBlog-User/ WigellBlog-Admin --
-    @DeleteMapping("/deletepost/{id}") //TODO få in sub. Kontrollera rätt användare eller Admin.
-    public ResponseEntity<String> deletePost(@PathVariable Long id) {
-        return null;
+    @DeleteMapping("/deletepost/{id}")
+    public ResponseEntity<String> deletePost(@PathVariable Long id, Jwt jwt) {
+        return ResponseEntity.ok(blogPostService.deleteBlogPost(id,jwt)) ;
     }
 
     //          -- AUKTORISERADE ANVÄNDARE -  WigellBlog-Admin --
