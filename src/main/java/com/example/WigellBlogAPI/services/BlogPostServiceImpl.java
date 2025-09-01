@@ -77,7 +77,7 @@ public class BlogPostServiceImpl implements BlogPostService {
 
     private void validateOwnerOrAdmin(String blogPostUserId, Jwt jwt) {
         List<String> roles = jwt.getClaim("authorities");
-        boolean isAdmin = roles.contains("ROLE_WigellBlog_Admin");
+        boolean isAdmin = roles.contains("ROLE_wigellblog-admin");
         String sub = jwt.getClaim("sub");
 
         if (!isAdmin) {
