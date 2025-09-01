@@ -4,6 +4,10 @@ import com.example.WigellBlogAPI.entities.BlogPost;
 import com.example.WigellBlogAPI.repositories.BlogPostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -38,8 +42,15 @@ public class BlogPostServiceImpl implements BlogPostService {
     }
 
     @Override
-    public BlogPost updateBlogPost(Long blogpostId, BlogPost blogPost, String sub) {
-        return null;
+    public BlogPost updateBlogPost(BlogPost blogPost, Jwt jwt) {
+        validateBlogPostForUpdate(blogPost,jwt);
+        if (blogPost.getTitle() != null && !blogPost.getTitle().isBlank()){
+            blogPost.setTitle(blogPost.getTitle());
+        }
+        if (blogPost.getContent() != null && !blogPost.getContent().isBlank()){
+            blogPost.setContent(blogPost.getContent());
+        }
+        return blogPostRepository.save(blogPost);
     }
 
     @Override
@@ -61,11 +72,19 @@ public class BlogPostServiceImpl implements BlogPostService {
         }
     }
 
-    private void validateBlogPostForUpdate(BlogPost blogPost, String sub) {
-        if (!Objects.equals(blogPost.getUserId(), sub))
-        {
+    private void validateBlogPostForUpdate(BlogPost blogPost, Jwt jwt) {
 
+        List<String> roles = jwt.getClaim("authorities");
+        boolean isAdmin = roles.contains("ROLE_WigellBlog_Admin");
+        String sub = jwt.getClaim("sub");
+
+        if (!isAdmin) {
+            if (!Objects.equals(blogPost.getUserId(), sub)) {
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User is not allowed to update blog post");
+            }
         }
-
+        if (blogPostRepository.findById(blogPost.getId()).isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Blog post with id " + blogPost.getId() + " not found");
+        }
     }
 }

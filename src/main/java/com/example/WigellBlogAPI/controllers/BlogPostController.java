@@ -1,7 +1,10 @@
 package com.example.WigellBlogAPI.controllers;
 
 import com.example.WigellBlogAPI.entities.BlogPost;
+import com.example.WigellBlogAPI.services.BlogPostService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -9,6 +12,13 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v2")
 public class BlogPostController {
+
+    private final BlogPostService blogPostService;
+
+    @Autowired
+    public BlogPostController(BlogPostService blogPostService) {
+        this.blogPostService = blogPostService;
+    }
 
 
     //          -- AUTENTISERADE ANVÄNDARE --
@@ -29,8 +39,8 @@ public class BlogPostController {
     }
 
     @PutMapping("/updatepost") //TODO Få in SUB så att det blir rätt person som uppdaterar
-    public ResponseEntity<BlogPost> updatePost(@RequestBody BlogPost post) {
-        return null;
+    public ResponseEntity<BlogPost> updatePost(@RequestBody BlogPost post, Jwt jwt) {
+        return blogPostService.updateBlogPost(post,jwt);
     }
 
     //          -- AUKTORISERADE ANVÄNDARE - WigellBlog-User/ WigellBlog-Admin --
