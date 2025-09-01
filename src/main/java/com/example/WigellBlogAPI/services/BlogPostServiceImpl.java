@@ -1,5 +1,6 @@
 package com.example.WigellBlogAPI.services;
 
+import com.example.WigellBlogAPI.dtos.BlogPostCountDTO;
 import com.example.WigellBlogAPI.entities.BlogPost;
 import com.example.WigellBlogAPI.repositories.BlogPostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,9 +34,9 @@ public class BlogPostServiceImpl implements BlogPostService {
     }
 
     @Override
-    public BlogPost createBlogPost(BlogPost blogPost, String sub) {
+    public BlogPost createBlogPost(BlogPost blogPost, Jwt jwt) {
         validateCreateBlogPost(blogPost);
-        blogPost.setUserId(sub);
+        blogPost.setUserId(jwt.getClaim("sub"));
         return blogPostRepository.save(blogPost);
     }
 
@@ -62,8 +63,9 @@ public class BlogPostServiceImpl implements BlogPostService {
     }
 
     @Override
-    public String countBlogPostsInSystem() {
-        return "";
+    public BlogPostCountDTO countBlogPostsInSystem() {
+        Long count = blogPostRepository.count();
+        return new BlogPostCountDTO(count);
     }
 
     private void validateCreateBlogPost(BlogPost blogPost) {
