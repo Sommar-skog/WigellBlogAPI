@@ -37,6 +37,7 @@ public class BlogPostServiceImpl implements BlogPostService {
     public BlogPost createBlogPost(BlogPost blogPost, Jwt jwt) {
         validateCreateBlogPost(blogPost);
         blogPost.setUserId(jwt.getClaim("sub"));
+        System.out.println(blogPost);
         return blogPostRepository.save(blogPost);
     }
 
@@ -51,6 +52,7 @@ public class BlogPostServiceImpl implements BlogPostService {
         if (blogPost.getContent() != null && !blogPost.getContent().isBlank()){
             blogPostToUpdate.setContent(blogPost.getContent());
         }
+        System.out.println(blogPostToUpdate);
         return blogPostRepository.save(blogPostToUpdate);
     }
 
