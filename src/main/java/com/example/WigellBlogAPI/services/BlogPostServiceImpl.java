@@ -42,16 +42,16 @@ public class BlogPostServiceImpl implements BlogPostService {
 
     @Override
     public BlogPost updateBlogPost(BlogPost blogPost, Jwt jwt) {
-        validateBlogPostExist(blogPost.getId());
-        validateOwnerOrAdmin(blogPost.getUserId(),jwt);
+        BlogPost blogPostToUpdate = validateBlogPostExist(blogPost.getId());
+        validateOwnerOrAdmin(blogPostToUpdate.getUserId(),jwt);
 
         if (blogPost.getTitle() != null && !blogPost.getTitle().isBlank()){
-            blogPost.setTitle(blogPost.getTitle());
+            blogPostToUpdate.setTitle(blogPost.getTitle());
         }
         if (blogPost.getContent() != null && !blogPost.getContent().isBlank()){
-            blogPost.setContent(blogPost.getContent());
+            blogPostToUpdate.setContent(blogPost.getContent());
         }
-        return blogPostRepository.save(blogPost);
+        return blogPostRepository.save(blogPostToUpdate);
     }
 
     @Override
