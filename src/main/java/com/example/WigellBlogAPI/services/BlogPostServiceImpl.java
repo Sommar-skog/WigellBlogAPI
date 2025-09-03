@@ -86,7 +86,7 @@ public class BlogPostServiceImpl implements BlogPostService {
 
         if (!isAdmin) {
             if (!Objects.equals(blogPostUserId, sub)) {
-                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User is not allowed to update blog post");
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User is not owner of blog post or admin");
             }
         }
     }
