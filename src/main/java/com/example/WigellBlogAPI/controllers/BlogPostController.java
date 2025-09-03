@@ -6,6 +6,7 @@ import com.example.WigellBlogAPI.services.BlogPostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,18 +37,18 @@ public class BlogPostController {
 
     //          -- AUKTORISERADE ANVÄNDARE - WigellBlog-User --
     @PostMapping("/newpost")
-    public ResponseEntity<BlogPost> createPost(@RequestBody BlogPost post, Jwt jwt) {
+    public ResponseEntity<BlogPost> createPost(@RequestBody BlogPost post, @AuthenticationPrincipal Jwt jwt) {
         return new ResponseEntity<>(blogPostService.createBlogPost(post, jwt), HttpStatus.CREATED);
     }
 
     @PutMapping("/updatepost")
-    public ResponseEntity<BlogPost> updatePost(@RequestBody BlogPost post, Jwt jwt) {
+    public ResponseEntity<BlogPost> updatePost(@RequestBody BlogPost post, @AuthenticationPrincipal Jwt jwt) {
         return ResponseEntity.ok(blogPostService.updateBlogPost(post,jwt)) ;
     }
 
     //          -- AUKTORISERADE ANVÄNDARE - WigellBlog-User/ WigellBlog-Admin --
     @DeleteMapping("/deletepost/{id}")
-    public ResponseEntity<String> deletePost(@PathVariable Long id, Jwt jwt) {
+    public ResponseEntity<String> deletePost(@PathVariable Long id, @AuthenticationPrincipal Jwt jwt) {
         return ResponseEntity.ok(blogPostService.deleteBlogPost(id,jwt)) ;
     }
 
