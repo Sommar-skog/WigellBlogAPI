@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -43,22 +44,30 @@ public class BlogPostController {
     @PostMapping("/newpost")
     public ResponseEntity<BlogPostDTO> createPost(@RequestBody BlogPost post, @AuthenticationPrincipal Jwt jwt) {
         System.out.println("Authorities: " + SecurityContextHolder.getContext().getAuthentication().getAuthorities());
+        System.out.println("User: " + SecurityContextHolder.getContext().getAuthentication().getName());
         return new ResponseEntity<>(blogPostService.createBlogPost(post, jwt), HttpStatus.CREATED);
     }
 
-    @PreAuthorize("hasAnyRole('wigelblog-user','wigellblog-admin')")
+/*    @PreAuthorize("hasAnyRole('wigellblog-user','wigellblog-admin')")
     @PutMapping("/updatepost")
     public ResponseEntity<BlogPostDTO> updatePost(@RequestBody BlogPost post, @AuthenticationPrincipal Jwt jwt) {
         System.out.println("Authorities: " + SecurityContextHolder.getContext().getAuthentication().getAuthorities());
         return ResponseEntity.ok(blogPostService.updateBlogPost(post,jwt)) ;
-    }
+    }*/
+
+@PreAuthorize("hasAnyRole('wigellblog-user','wigellblog-admin')")
+@PutMapping("/updatepost")
+public ResponseEntity<BlogPostDTO> updatePost(@RequestBody BlogPost post, Authentication auth) {
+    System.out.println("Authorities: " + auth.getAuthorities());
+    return ResponseEntity.ok(blogPostService.updateBlogPost(post,auth)) ;
+}
 
     //          -- AUKTORISERADE ANVÄNDARE - WigellBlog-User/ WigellBlog-Admin --
-    @PreAuthorize("hasAnyRole('wigelblog-user','wigellblog-admin')")
+    @PreAuthorize("hasAnyRole('wigellblog-user','wigellblog-admin')")
     @DeleteMapping("/deletepost/{id}")
-    public ResponseEntity<String> deletePost(@PathVariable Long id, @AuthenticationPrincipal Jwt jwt) {
-        System.out.println("Authorities: " + SecurityContextHolder.getContext().getAuthentication().getAuthorities());
-        return ResponseEntity.ok(blogPostService.deleteBlogPost(id,jwt)) ;
+    public ResponseEntity<String> deletePost(@PathVariable Long id, Authentication auth) {
+        System.out.println("Authorities: " + auth.getAuthorities());
+        return ResponseEntity.ok(blogPostService.deleteBlogPost(id,auth)) ;
     }
 
     //          -- AUKTORISERADE ANVÄNDARE -  WigellBlog-Admin --

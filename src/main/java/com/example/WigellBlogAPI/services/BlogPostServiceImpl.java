@@ -7,6 +7,8 @@ import com.example.WigellBlogAPI.repositories.BlogPostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.core.Authentication;
+
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -57,9 +59,9 @@ public class BlogPostServiceImpl implements BlogPostService {
     }
 
     @Override
-    public BlogPostDTO updateBlogPost(BlogPost blogPost, Jwt jwt) {
+    public BlogPostDTO updateBlogPost(BlogPost blogPost, Authentication auth) {
         BlogPost blogPostToUpdate = validateBlogPostExist(blogPost.getId());
-        validateOwnerOrAdmin(blogPostToUpdate.getUserId(),jwt);
+        validateOwnerOrAdmin(blogPostToUpdate.getUserId(),auth);
 
         if (blogPost.getTitle() != null && !blogPost.getTitle().isBlank()){
             blogPostToUpdate.setTitle(blogPost.getTitle());
@@ -73,9 +75,9 @@ public class BlogPostServiceImpl implements BlogPostService {
     }
 
     @Override
-    public String deleteBlogPost(Long blogPostId, Jwt jwt) {
+    public String deleteBlogPost(Long blogPostId, Authentication auth) {
         BlogPost postToDelete = validateBlogPostExist(blogPostId);
-        validateOwnerOrAdmin(postToDelete.getUserId(),jwt);
+        validateOwnerOrAdmin(postToDelete.getUserId(),auth);
         blogPostRepository.delete(postToDelete);
         return "Blog post with id " + blogPostId + " deleted successfully";
     }
@@ -95,16 +97,31 @@ public class BlogPostServiceImpl implements BlogPostService {
         }
     }
 
-    private void validateOwnerOrAdmin(String blogPostUserId, Jwt jwt) {
-        List<String> roles = jwt.getClaim("authorities");
+    private void validateOwnerOrAdmin(String blogPostUserId, Authentication auth) {
+        /*List<String> roles = jwt.getClaim("authorities");
         boolean isAdmin = roles.contains("ROLE_wigellblog-admin");
         String sub = jwt.getClaim("sub");
+*/
+        boolean isAdmin = auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_wigellblog-admin"));
+        String sub = auth.getName();
+        System.out.println("blogPostUserId: " + blogPostUserId);
+        System.out.println("isAdmin: " + isAdmin);
+        System.out.println("authenticated-sub: " + sub);
 
         if (!isAdmin) {
             if (!Objects.equals(blogPostUserId, sub)) {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User is not owner of blog post or admin");
             }
         }
+    }
+
+    private void validateOwner(String blogPostUserId, Jwt jwt) {
+        String sub = jwt.getClaim("sub");
+
+            if (!Objects.equals(blogPostUserId, sub)) {
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User is not owner of this blog post");
+            }
+
     }
 
     private BlogPost validateBlogPostExist(Long blogPostId) {
