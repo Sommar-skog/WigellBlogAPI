@@ -4,6 +4,7 @@ package com.example.WigellBlogAPI.entities;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Entity
 public class BlogPost {
@@ -77,12 +78,13 @@ public class BlogPost {
 
     @Override
     public String toString() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         return "BlogPost{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", content='" + content + '\'' +
                 ", userId='" + userId + '\'' +
-                ", postedTime=" + postedTime +
+                ", postedTime=" + postedTime.format(formatter) +
                 '}';
     }
 }
