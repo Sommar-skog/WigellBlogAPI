@@ -21,19 +21,6 @@ public class SecurityConfig {
         this.jwtAuthConverter = jwtAuthConverter;
     }
 
-    //TODO uppdatera classen för Keycloak
-/*    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/h2-console/**").permitAll()
-                        .anyRequest().authenticated())
-                        .csrf(csrf ->csrf.disable())
-                        .headers(h -> h.frameOptions(f -> f.disable())) //Så inte H2-sidan ska blockeras.
-                        .formLogin(Customizer.withDefaults());
-        return http.build();
-    }*/
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -41,14 +28,8 @@ public class SecurityConfig {
                 .headers(h -> h.frameOptions(f -> f.disable()))
                 .authorizeHttpRequests(auth ->
                         auth
-                                //.requestMatchers("/api/v2/newpost").hasRole("wigellblog-user")
-                                //.requestMatchers("/api/v2/updatepost").hasAnyRole("wigellblog-user", "wigellblog-admin")
-                                //.requestMatchers("/api/v2/deletepost/").hasAnyRole("wigellblog-user", "wigellblog-admin")
-                                //.requestMatchers("/api/v2/count").hasRole("wigellblog-admin")
                                 .requestMatchers("/h2-console/**").permitAll()
                                 .anyRequest().authenticated()
-
-
                 )
                 .oauth2ResourceServer(oauth2 ->
                         oauth2
@@ -56,6 +37,4 @@ public class SecurityConfig {
                 );
         return http.build();
     }
-
-
 }
