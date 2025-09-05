@@ -13,6 +13,18 @@ public class BlogPostDTO {
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Europe/Stockholm")
     private LocalDateTime postedTime;
 
+    public BlogPostDTO() {
+
+    }
+
+    public BlogPostDTO(Long id, String title, String content, String userId, LocalDateTime postedTime) {
+        this.id = id;
+        this.title = title;
+        this.content = content;
+        this.userId = userId;
+        this.postedTime = postedTime;
+    }
+
     public Long getId() {
         return id;
     }

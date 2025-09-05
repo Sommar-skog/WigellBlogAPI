@@ -1,6 +1,7 @@
 package com.example.WigellBlogAPI.services;
 
 import com.example.WigellBlogAPI.dtos.BlogPostCountDTO;
+import com.example.WigellBlogAPI.dtos.BlogPostDTO;
 import com.example.WigellBlogAPI.entities.BlogPost;
 import com.example.WigellBlogAPI.repositories.BlogPostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,25 +25,39 @@ public class BlogPostServiceImpl implements BlogPostService {
     }
 
     @Override
-    public List<BlogPost> getAllBlogPosts() {
-        return blogPostRepository.findAll();
+    public List<BlogPostDTO> getAllBlogPosts() {
+        return blogPostRepository.findAll()
+                .stream()
+                .map(blogPost -> new BlogPostDTO(
+                        blogPost.getId(),
+                        blogPost.getTitle(),
+                        blogPost.getContent(),
+                        blogPost.getUserId(),
+                        blogPost.getPostedTime()
+                )).toList();
     }
 
     @Override
-    public BlogPost getBlogPostById(Long id) {
-        return blogPostRepository.findById(id).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Blog post with id " + id + " not found"));
+    public BlogPostDTO getBlogPostById(Long id) {
+       BlogPost blogPost = blogPostRepository.findById(id)
+               .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Blog post with id " + id + " not found"));
+
+       return new BlogPostDTO(blogPost.getId(), blogPost.getTitle(), blogPost.getContent(), blogPost.getUserId(), blogPost.getPostedTime());
     }
 
     @Override
-    public BlogPost createBlogPost(BlogPost blogPost, Jwt jwt) {
+    public BlogPostDTO createBlogPost(BlogPost blogPost, Jwt jwt) {
         validateCreateBlogPost(blogPost);
         blogPost.setUserId(jwt.getClaim("sub"));
+        BlogPost savedBlogPost =  blogPostRepository.save(blogPost);
+
         System.out.println(blogPost);
-        return blogPostRepository.save(blogPost);
+
+        return new BlogPostDTO(savedBlogPost.getId(), savedBlogPost.getTitle(), savedBlogPost.getContent(), savedBlogPost.getUserId(), savedBlogPost.getPostedTime());
     }
 
     @Override
-    public BlogPost updateBlogPost(BlogPost blogPost, Jwt jwt) {
+    public BlogPostDTO updateBlogPost(BlogPost blogPost, Jwt jwt) {
         BlogPost blogPostToUpdate = validateBlogPostExist(blogPost.getId());
         validateOwnerOrAdmin(blogPostToUpdate.getUserId(),jwt);
 
@@ -52,8 +67,9 @@ public class BlogPostServiceImpl implements BlogPostService {
         if (blogPost.getContent() != null && !blogPost.getContent().isBlank()){
             blogPostToUpdate.setContent(blogPost.getContent());
         }
-        System.out.println(blogPostToUpdate);
-        return blogPostRepository.save(blogPostToUpdate);
+
+        BlogPost updatedBlogPost = blogPostRepository.save(blogPostToUpdate);
+        return new BlogPostDTO(updatedBlogPost.getId(), updatedBlogPost.getTitle(), updatedBlogPost.getContent(), updatedBlogPost.getUserId(), updatedBlogPost.getPostedTime());
     }
 
     @Override
