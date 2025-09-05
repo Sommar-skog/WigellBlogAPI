@@ -4,6 +4,7 @@ import com.example.WigellBlogAPI.dtos.BlogPostCountDTO;
 import com.example.WigellBlogAPI.dtos.BlogPostDTO;
 import com.example.WigellBlogAPI.entities.BlogPost;
 import com.example.WigellBlogAPI.repositories.BlogPostRepository;
+import com.example.WigellBlogAPI.utils.UserInfoUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -50,7 +51,7 @@ public class BlogPostServiceImpl implements BlogPostService {
     @Override
     public BlogPostDTO createBlogPost(BlogPost blogPost, Jwt jwt) {
         validateCreateBlogPost(blogPost);
-        blogPost.setUserId(jwt.getClaim("sub"));
+        blogPost.setUserId(UserInfoUtil.getUserIdFromJwt(jwt));
         BlogPost savedBlogPost =  blogPostRepository.save(blogPost);
 
         System.out.println(blogPost);
@@ -102,8 +103,8 @@ public class BlogPostServiceImpl implements BlogPostService {
         boolean isAdmin = roles.contains("ROLE_wigellblog-admin");
         String sub = jwt.getClaim("sub");
 */
-        boolean isAdmin = auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_wigellblog-admin"));
-        String sub = auth.getName();
+        boolean isAdmin = UserInfoUtil.hasRoleFromAuthentication(auth,"wigellblog-admin");
+        String sub = UserInfoUtil.getUserIdFromAuthentication(auth);
         System.out.println("blogPostUserId: " + blogPostUserId);
         System.out.println("isAdmin: " + isAdmin);
         System.out.println("authenticated-sub: " + sub);
@@ -113,15 +114,6 @@ public class BlogPostServiceImpl implements BlogPostService {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User is not owner of blog post or admin");
             }
         }
-    }
-
-    private void validateOwner(String blogPostUserId, Jwt jwt) {
-        String sub = jwt.getClaim("sub");
-
-            if (!Objects.equals(blogPostUserId, sub)) {
-                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User is not owner of this blog post");
-            }
-
     }
 
     private BlogPost validateBlogPostExist(Long blogPostId) {
