@@ -7,7 +7,9 @@ import com.example.WigellBlogAPI.services.BlogPostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,25 +39,33 @@ public class BlogPostController {
     }
 
     //          -- AUKTORISERADE ANVÄNDARE - WigellBlog-User --
+    @PreAuthorize("hasRole('wigellblog-user')")
     @PostMapping("/newpost")
     public ResponseEntity<BlogPostDTO> createPost(@RequestBody BlogPost post, @AuthenticationPrincipal Jwt jwt) {
+        System.out.println("Authorities: " + SecurityContextHolder.getContext().getAuthentication().getAuthorities());
         return new ResponseEntity<>(blogPostService.createBlogPost(post, jwt), HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasAnyRole('wigelblog-user','wigellblog-admin')")
     @PutMapping("/updatepost")
     public ResponseEntity<BlogPostDTO> updatePost(@RequestBody BlogPost post, @AuthenticationPrincipal Jwt jwt) {
+        System.out.println("Authorities: " + SecurityContextHolder.getContext().getAuthentication().getAuthorities());
         return ResponseEntity.ok(blogPostService.updateBlogPost(post,jwt)) ;
     }
 
     //          -- AUKTORISERADE ANVÄNDARE - WigellBlog-User/ WigellBlog-Admin --
+    @PreAuthorize("hasAnyRole('wigelblog-user','wigellblog-admin')")
     @DeleteMapping("/deletepost/{id}")
     public ResponseEntity<String> deletePost(@PathVariable Long id, @AuthenticationPrincipal Jwt jwt) {
+        System.out.println("Authorities: " + SecurityContextHolder.getContext().getAuthentication().getAuthorities());
         return ResponseEntity.ok(blogPostService.deleteBlogPost(id,jwt)) ;
     }
 
     //          -- AUKTORISERADE ANVÄNDARE -  WigellBlog-Admin --
+    @PreAuthorize("hasRole('wigellblog-admin')")
     @GetMapping("/count")
     public ResponseEntity<BlogPostCountDTO> getCount() {
+        System.out.println("Authorities: " + SecurityContextHolder.getContext().getAuthentication().getAuthorities());
         return ResponseEntity.ok(blogPostService.countBlogPostsInSystem());
     }
 }
