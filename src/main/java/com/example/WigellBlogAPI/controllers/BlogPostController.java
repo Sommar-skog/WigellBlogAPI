@@ -1,6 +1,7 @@
 package com.example.WigellBlogAPI.controllers;
 
 import com.example.WigellBlogAPI.dtos.BlogPostCountDTO;
+import com.example.WigellBlogAPI.dtos.BlogPostDTO;
 import com.example.WigellBlogAPI.entities.BlogPost;
 import com.example.WigellBlogAPI.services.BlogPostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,23 +27,23 @@ public class BlogPostController {
 
     //          -- AUTENTISERADE ANVÄNDARE --
     @GetMapping("/posts")
-    public ResponseEntity<List<BlogPost>> getAllPosts() {
+    public ResponseEntity<List<BlogPostDTO>> getAllPosts() {
         return ResponseEntity.ok(blogPostService.getAllBlogPosts());
     }
 
     @GetMapping("/post/{id}")
-    public ResponseEntity<BlogPost> getPostById(@PathVariable Long id) {
+    public ResponseEntity<BlogPostDTO> getPostById(@PathVariable Long id) {
         return ResponseEntity.ok(blogPostService.getBlogPostById(id));
     }
 
     //          -- AUKTORISERADE ANVÄNDARE - WigellBlog-User --
     @PostMapping("/newpost")
-    public ResponseEntity<BlogPost> createPost(@RequestBody BlogPost post, @AuthenticationPrincipal Jwt jwt) {
+    public ResponseEntity<BlogPostDTO> createPost(@RequestBody BlogPost post, @AuthenticationPrincipal Jwt jwt) {
         return new ResponseEntity<>(blogPostService.createBlogPost(post, jwt), HttpStatus.CREATED);
     }
 
     @PutMapping("/updatepost")
-    public ResponseEntity<BlogPost> updatePost(@RequestBody BlogPost post, @AuthenticationPrincipal Jwt jwt) {
+    public ResponseEntity<BlogPostDTO> updatePost(@RequestBody BlogPost post, @AuthenticationPrincipal Jwt jwt) {
         return ResponseEntity.ok(blogPostService.updateBlogPost(post,jwt)) ;
     }
 

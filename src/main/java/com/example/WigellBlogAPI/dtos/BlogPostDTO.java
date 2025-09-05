@@ -10,7 +10,7 @@ public class BlogPostDTO {
     private String title;
     private String content;
     private String userId;
-    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Europe/Stockholm")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Europe/Stockholm")
     private LocalDateTime postedTime;
 
     public BlogPostDTO() {
