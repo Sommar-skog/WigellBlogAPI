@@ -36,6 +36,7 @@ public class BlogPostServiceImpl implements BlogPostService {
                         blogPost.getTitle(),
                         blogPost.getContent(),
                         blogPost.getUserId(),
+                        blogPost.getUsername(),
                         blogPost.getPostedTime()
                 )).toList();
     }
@@ -45,7 +46,7 @@ public class BlogPostServiceImpl implements BlogPostService {
        BlogPost blogPost = blogPostRepository.findById(id)
                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Blog post with id " + id + " not found"));
 
-       return new BlogPostDTO(blogPost.getId(), blogPost.getTitle(), blogPost.getContent(), blogPost.getUserId(), blogPost.getPostedTime());
+       return new BlogPostDTO(blogPost.getId(), blogPost.getTitle(), blogPost.getContent(), blogPost.getUserId(),blogPost.getUsername(),blogPost.getPostedTime());
     }
 
     @Override
@@ -57,7 +58,7 @@ public class BlogPostServiceImpl implements BlogPostService {
 
         System.out.println(blogPost);
 
-        return new BlogPostDTO(savedBlogPost.getId(), savedBlogPost.getTitle(), savedBlogPost.getContent(), savedBlogPost.getUserId(), savedBlogPost.getPostedTime());
+        return new BlogPostDTO(savedBlogPost.getId(), savedBlogPost.getTitle(), savedBlogPost.getContent(), savedBlogPost.getUserId(),savedBlogPost.getUsername(),savedBlogPost.getPostedTime());
     }
 
     @Override
@@ -73,7 +74,7 @@ public class BlogPostServiceImpl implements BlogPostService {
         }
 
         BlogPost updatedBlogPost = blogPostRepository.save(blogPostToUpdate);
-        return new BlogPostDTO(updatedBlogPost.getId(), updatedBlogPost.getTitle(), updatedBlogPost.getContent(), updatedBlogPost.getUserId(), updatedBlogPost.getPostedTime());
+        return new BlogPostDTO(updatedBlogPost.getId(), updatedBlogPost.getTitle(), updatedBlogPost.getContent(), updatedBlogPost.getUserId(), updatedBlogPost.getUserId(), updatedBlogPost.getPostedTime());
     }
 
     @Override

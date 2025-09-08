@@ -10,6 +10,7 @@ public class BlogPostDTO {
     private String title;
     private String content;
     private String userId;
+    private String username;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Europe/Stockholm")
     private LocalDateTime postedTime;
 
@@ -17,11 +18,12 @@ public class BlogPostDTO {
 
     }
 
-    public BlogPostDTO(Long id, String title, String content, String userId, LocalDateTime postedTime) {
+    public BlogPostDTO(Long id, String title, String content, String userId,String username, LocalDateTime postedTime) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.userId = userId;
+        this.username = username;
         this.postedTime = postedTime;
     }
 
@@ -57,6 +59,14 @@ public class BlogPostDTO {
         this.userId = userId;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     public LocalDateTime getPostedTime() {
         return postedTime;
     }
@@ -72,6 +82,7 @@ public class BlogPostDTO {
                 ", title='" + title + '\'' +
                 ", content='" + content + '\'' +
                 ", userId='" + userId + '\'' +
+                ", username='" + username + '\'' +
                 ", postedTime=" + postedTime +
                 '}';
     }
