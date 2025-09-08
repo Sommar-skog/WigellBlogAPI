@@ -2,6 +2,8 @@ package com.example.WigellBlogAPI.services;
 
 import com.example.WigellBlogAPI.dtos.BlogPostCountDTO;
 import com.example.WigellBlogAPI.dtos.BlogPostDTO;
+import com.example.WigellBlogAPI.dtos.CreateBlogPostDTO;
+import com.example.WigellBlogAPI.dtos.UpdateBlogPostDTO;
 import com.example.WigellBlogAPI.entities.BlogPost;
 import org.springframework.security.core.Authentication;
 
@@ -13,8 +15,8 @@ public interface BlogPostService {
 
     List<BlogPostDTO> getAllBlogPosts();
     BlogPostDTO getBlogPostById(Long id);
-    BlogPostDTO createBlogPost(BlogPost blogPost, Jwt jwt);
-    BlogPostDTO updateBlogPost(BlogPost blogPost, Authentication auth);
+    BlogPostDTO createBlogPost(CreateBlogPostDTO blogPost, Jwt jwt);
+    BlogPostDTO updateBlogPost(UpdateBlogPostDTO blogPost, Authentication auth);
     String deleteBlogPost(Long blogPostId, Authentication auth);
     BlogPostCountDTO countBlogPostsInSystem();
 }

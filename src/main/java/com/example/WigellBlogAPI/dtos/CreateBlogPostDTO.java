@@ -1,27 +1,17 @@
 package com.example.WigellBlogAPI.dtos;
 
-public class UpdatedBlogPostDTO {
+public class CreateBlogPostDTO {
 
-    private Long id;
     private String title;
     private String content;
 
-    public UpdatedBlogPostDTO() {
+    public CreateBlogPostDTO() {
 
     }
 
-    public UpdatedBlogPostDTO(Long id, String title, String content) {
-        this.id = id;
+    public CreateBlogPostDTO(String title, String content) {
         this.title = title;
         this.content = content;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getTitle() {
@@ -42,9 +32,8 @@ public class UpdatedBlogPostDTO {
 
     @Override
     public String toString() {
-        return "UpdatedBlogPostDTO{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
+        return "CreateBlogPostDTO{" +
+                "title='" + title + '\'' +
                 ", content='" + content + '\'' +
                 '}';
     }

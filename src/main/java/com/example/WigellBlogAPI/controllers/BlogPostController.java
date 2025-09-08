@@ -2,6 +2,8 @@ package com.example.WigellBlogAPI.controllers;
 
 import com.example.WigellBlogAPI.dtos.BlogPostCountDTO;
 import com.example.WigellBlogAPI.dtos.BlogPostDTO;
+import com.example.WigellBlogAPI.dtos.CreateBlogPostDTO;
+import com.example.WigellBlogAPI.dtos.UpdateBlogPostDTO;
 import com.example.WigellBlogAPI.entities.BlogPost;
 import com.example.WigellBlogAPI.services.BlogPostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,25 +44,18 @@ public class BlogPostController {
     //          -- AUKTORISERADE ANVÄNDARE - WigellBlog-User --
     @PreAuthorize("hasRole('wigellblog-user')")
     @PostMapping("/newpost")
-    public ResponseEntity<BlogPostDTO> createPost(@RequestBody BlogPost post, @AuthenticationPrincipal Jwt jwt) {
+    public ResponseEntity<BlogPostDTO> createPost(@RequestBody CreateBlogPostDTO post, @AuthenticationPrincipal Jwt jwt) {
         System.out.println("Authorities: " + SecurityContextHolder.getContext().getAuthentication().getAuthorities());
         System.out.println("User: " + SecurityContextHolder.getContext().getAuthentication().getName());
         return new ResponseEntity<>(blogPostService.createBlogPost(post, jwt), HttpStatus.CREATED);
     }
 
-/*    @PreAuthorize("hasAnyRole('wigellblog-user','wigellblog-admin')")
+    @PreAuthorize("hasAnyRole('wigellblog-user','wigellblog-admin')")
     @PutMapping("/updatepost")
-    public ResponseEntity<BlogPostDTO> updatePost(@RequestBody BlogPost post, @AuthenticationPrincipal Jwt jwt) {
-        System.out.println("Authorities: " + SecurityContextHolder.getContext().getAuthentication().getAuthorities());
-        return ResponseEntity.ok(blogPostService.updateBlogPost(post,jwt)) ;
-    }*/
-
-@PreAuthorize("hasAnyRole('wigellblog-user','wigellblog-admin')")
-@PutMapping("/updatepost")
-public ResponseEntity<BlogPostDTO> updatePost(@RequestBody BlogPost post, Authentication auth) {
-    System.out.println("Authorities: " + auth.getAuthorities());
-    return ResponseEntity.ok(blogPostService.updateBlogPost(post,auth)) ;
-}
+    public ResponseEntity<BlogPostDTO> updatePost(@RequestBody UpdateBlogPostDTO post, Authentication auth) {
+        System.out.println("Authorities: " + auth.getAuthorities());
+        return ResponseEntity.ok(blogPostService.updateBlogPost(post,auth)) ;
+    }
 
     //          -- AUKTORISERADE ANVÄNDARE - WigellBlog-User/ WigellBlog-Admin --
     @PreAuthorize("hasAnyRole('wigellblog-user','wigellblog-admin')")

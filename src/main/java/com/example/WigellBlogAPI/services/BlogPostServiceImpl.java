@@ -2,6 +2,8 @@ package com.example.WigellBlogAPI.services;
 
 import com.example.WigellBlogAPI.dtos.BlogPostCountDTO;
 import com.example.WigellBlogAPI.dtos.BlogPostDTO;
+import com.example.WigellBlogAPI.dtos.CreateBlogPostDTO;
+import com.example.WigellBlogAPI.dtos.UpdateBlogPostDTO;
 import com.example.WigellBlogAPI.entities.BlogPost;
 import com.example.WigellBlogAPI.repositories.BlogPostRepository;
 import com.example.WigellBlogAPI.utils.UserInfoUtil;
@@ -50,19 +52,22 @@ public class BlogPostServiceImpl implements BlogPostService {
     }
 
     @Override
-    public BlogPostDTO createBlogPost(BlogPost blogPost, Jwt jwt) {
+    public BlogPostDTO createBlogPost(CreateBlogPostDTO blogPost, Jwt jwt) {
         validateCreateBlogPost(blogPost);
-        blogPost.setUserId(UserInfoUtil.getUserIdFromJwt(jwt));
-        blogPost.setUsername(UserInfoUtil.getUsernameFromJwt(jwt));
-        BlogPost savedBlogPost =  blogPostRepository.save(blogPost);
+        BlogPost newBlogPost = new BlogPost();
+        newBlogPost.setTitle(blogPost.getTitle());
+        newBlogPost.setContent(blogPost.getContent());
+        newBlogPost.setUserId(UserInfoUtil.getUserIdFromJwt(jwt));
+        newBlogPost.setUsername(UserInfoUtil.getUsernameFromJwt(jwt));
+        BlogPost savedBlogPost =  blogPostRepository.save(newBlogPost);
 
-        System.out.println(blogPost);
+        System.out.println("New blogPost saved to repository: " + newBlogPost);
 
         return new BlogPostDTO(savedBlogPost.getId(), savedBlogPost.getTitle(), savedBlogPost.getContent(), savedBlogPost.getUserId(),savedBlogPost.getUsername(),savedBlogPost.getPostedTime());
     }
 
     @Override
-    public BlogPostDTO updateBlogPost(BlogPost blogPost, Authentication auth) {
+    public BlogPostDTO updateBlogPost(UpdateBlogPostDTO blogPost, Authentication auth) {
         BlogPost blogPostToUpdate = validateBlogPostExist(blogPost.getId());
         validateOwnerOrAdmin(blogPostToUpdate.getUserId(),auth);
 
@@ -91,7 +96,7 @@ public class BlogPostServiceImpl implements BlogPostService {
         return new BlogPostCountDTO(count);
     }
 
-    private void validateCreateBlogPost(BlogPost blogPost) {
+    private void validateCreateBlogPost(CreateBlogPostDTO blogPost) {
         if (blogPost.getTitle() == null || blogPost.getTitle().isBlank()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Title cannot be null or blank");
         }
