@@ -24,7 +24,7 @@ public class UserInfoUtil {
         return jwt.getClaimAsString("family_name");
     }
 
-    public static boolean hasRoleFromJwt(Jwt jwt, String role){ //Hämtas från Authorities i Token (mappningen)
+    public static boolean hasRoleFromJwt(Jwt jwt, String role){
         return jwt.getClaimAsStringList("authorities").contains("ROLE_" +role);
     }
 
@@ -40,7 +40,7 @@ public class UserInfoUtil {
         return authentication.getName();
     }
 
-    public static boolean hasRoleFromAuthentication(Authentication authentication, String role){ //Hämtas från convertern
+    public static boolean hasRoleFromAuthentication(Authentication authentication, String role){
         return authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_" + role));
     }
 

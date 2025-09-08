@@ -4,7 +4,6 @@ import com.example.WigellBlogAPI.dtos.BlogPostCountDTO;
 import com.example.WigellBlogAPI.dtos.BlogPostDTO;
 import com.example.WigellBlogAPI.dtos.CreateBlogPostDTO;
 import com.example.WigellBlogAPI.dtos.UpdateBlogPostDTO;
-import com.example.WigellBlogAPI.entities.BlogPost;
 import org.springframework.security.core.Authentication;
 
 import org.springframework.security.oauth2.jwt.Jwt;
