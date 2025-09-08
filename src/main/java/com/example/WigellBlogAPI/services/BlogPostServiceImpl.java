@@ -52,11 +52,11 @@ public class BlogPostServiceImpl implements BlogPostService {
     }
 
     @Override
-    public BlogPostDTO createBlogPost(CreateBlogPostDTO blogPost, Jwt jwt) {
-        validateCreateBlogPost(blogPost);
+    public BlogPostDTO createBlogPost(CreateBlogPostDTO blogPostDTO, Jwt jwt) {
+        validateCreateBlogPost(blogPostDTO);
         BlogPost newBlogPost = new BlogPost();
-        newBlogPost.setTitle(blogPost.getTitle());
-        newBlogPost.setContent(blogPost.getContent());
+        newBlogPost.setTitle(blogPostDTO.getTitle());
+        newBlogPost.setContent(blogPostDTO.getContent());
         newBlogPost.setUserId(UserInfoUtil.getUserIdFromJwt(jwt));
         newBlogPost.setUsername(UserInfoUtil.getUsernameFromJwt(jwt));
         BlogPost savedBlogPost =  blogPostRepository.save(newBlogPost);
@@ -67,18 +67,19 @@ public class BlogPostServiceImpl implements BlogPostService {
     }
 
     @Override
-    public BlogPostDTO updateBlogPost(UpdateBlogPostDTO blogPost, Authentication auth) {
-        BlogPost blogPostToUpdate = validateBlogPostExist(blogPost.getId());
+    public BlogPostDTO updateBlogPost(UpdateBlogPostDTO blogPostDTO, Authentication auth) {
+        BlogPost blogPostToUpdate = validateBlogPostExist(blogPostDTO.getId());
         validateOwnerOrAdmin(blogPostToUpdate.getUserId(),auth);
 
-        if (blogPost.getTitle() != null && !blogPost.getTitle().isBlank()){
-            blogPostToUpdate.setTitle(blogPost.getTitle());
+        if (blogPostDTO.getTitle() != null && !blogPostDTO.getTitle().isBlank()){
+            blogPostToUpdate.setTitle(blogPostDTO.getTitle());
         }
-        if (blogPost.getContent() != null && !blogPost.getContent().isBlank()){
-            blogPostToUpdate.setContent(blogPost.getContent());
+        if (blogPostDTO.getContent() != null && !blogPostDTO.getContent().isBlank()){
+            blogPostToUpdate.setContent(blogPostDTO.getContent());
         }
 
         BlogPost updatedBlogPost = blogPostRepository.save(blogPostToUpdate);
+
         return new BlogPostDTO(updatedBlogPost.getId(), updatedBlogPost.getTitle(), updatedBlogPost.getContent(), updatedBlogPost.getUserId(), updatedBlogPost.getUsername(), updatedBlogPost.getPostedTime());
     }
 
@@ -87,6 +88,7 @@ public class BlogPostServiceImpl implements BlogPostService {
         BlogPost postToDelete = validateBlogPostExist(blogPostId);
         validateOwnerOrAdmin(postToDelete.getUserId(),auth);
         blogPostRepository.delete(postToDelete);
+
         return "Blog post with id " + blogPostId + " deleted successfully";
     }
 
@@ -106,10 +108,6 @@ public class BlogPostServiceImpl implements BlogPostService {
     }
 
     private void validateOwnerOrAdmin(String blogPostUserId, Authentication auth) {
-        /*List<String> roles = jwt.getClaim("authorities");
-        boolean isAdmin = roles.contains("ROLE_wigellblog-admin");
-        String sub = jwt.getClaim("sub");
-*/
         boolean isAdmin = UserInfoUtil.hasRoleFromAuthentication(auth,"wigellblog-admin");
         String sub = UserInfoUtil.getUserIdFromAuthentication(auth);
         System.out.println("blogPostUserId: " + blogPostUserId);
