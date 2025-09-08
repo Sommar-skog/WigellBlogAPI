@@ -74,7 +74,7 @@ public class BlogPostServiceImpl implements BlogPostService {
         }
 
         BlogPost updatedBlogPost = blogPostRepository.save(blogPostToUpdate);
-        return new BlogPostDTO(updatedBlogPost.getId(), updatedBlogPost.getTitle(), updatedBlogPost.getContent(), updatedBlogPost.getUserId(), updatedBlogPost.getUserId(), updatedBlogPost.getPostedTime());
+        return new BlogPostDTO(updatedBlogPost.getId(), updatedBlogPost.getTitle(), updatedBlogPost.getContent(), updatedBlogPost.getUserId(), updatedBlogPost.getUsername(), updatedBlogPost.getPostedTime());
     }
 
     @Override
