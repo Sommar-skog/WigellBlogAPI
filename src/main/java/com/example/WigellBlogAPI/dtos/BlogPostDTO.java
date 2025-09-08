@@ -4,6 +4,12 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.time.LocalDateTime;
 
+
+/**
+ * DTO for returning blog post data to the client.
+ * Includes full post information.
+ */
+
 public class BlogPostDTO {
 
     private Long id;

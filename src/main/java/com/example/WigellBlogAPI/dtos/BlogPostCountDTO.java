@@ -4,6 +4,11 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.time.LocalDateTime;
 
+/**
+ * DTO for returning the total number of blog posts in the system.
+ * Includes a timestamp of when the count was retrieved.
+ */
+
 public class BlogPostCountDTO {
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Europe/Stockholm")

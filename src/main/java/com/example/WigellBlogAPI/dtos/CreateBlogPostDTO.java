@@ -1,5 +1,13 @@
 package com.example.WigellBlogAPI.dtos;
 
+
+/**
+ * DTO for creating a new blog post.
+ * Used as input in POST endpoints.
+ * Contains only fields that the user is allowed to provide during creation,
+ * such as title and content — not user ID or username.
+ */
+
 public class CreateBlogPostDTO {
 
     private String title;
