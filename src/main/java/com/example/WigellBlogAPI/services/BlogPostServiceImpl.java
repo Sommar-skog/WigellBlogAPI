@@ -52,6 +52,7 @@ public class BlogPostServiceImpl implements BlogPostService {
     public BlogPostDTO createBlogPost(BlogPost blogPost, Jwt jwt) {
         validateCreateBlogPost(blogPost);
         blogPost.setUserId(UserInfoUtil.getUserIdFromJwt(jwt));
+        blogPost.setUsername(UserInfoUtil.getUsernameFromJwt(jwt));
         BlogPost savedBlogPost =  blogPostRepository.save(blogPost);
 
         System.out.println(blogPost);

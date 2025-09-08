@@ -8,7 +8,7 @@ import java.util.List;
 
 public class UserInfoUtil {
 
-    public static String getUserNameFromJwt(Jwt jwt){
+    public static String getUsernameFromJwt(Jwt jwt){
         return jwt.getClaimAsString("preferred_username");
     }
 
