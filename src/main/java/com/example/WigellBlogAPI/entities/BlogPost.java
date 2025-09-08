@@ -22,6 +22,9 @@ public class BlogPost {
     @Column(nullable = false, length = 36) //sub alltid 36 tecken långt i keycloak
     private String userId;
 
+    @Column(nullable = false,length = 50)
+    private String username;
+
     @Column(nullable = false)
     private LocalDateTime postedTime;
 
@@ -29,10 +32,11 @@ public class BlogPost {
         postedTime = LocalDateTime.now();
     }
 
-    public BlogPost(String title, String content, String userId) {
+    public BlogPost(String title, String content, String userId, String username) {
         this.title = title;
         this.content = content;
         this.userId = userId;
+        this.username = username;
         postedTime = LocalDateTime.now();
     }
 
@@ -68,6 +72,14 @@ public class BlogPost {
         this.userId = userId;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     public LocalDateTime getPostedTime() {
         return postedTime;
     }
@@ -84,6 +96,7 @@ public class BlogPost {
                 ", title='" + title + '\'' +
                 ", content='" + content + '\'' +
                 ", userId='" + userId + '\'' +
+                ", username='" + username + '\'' +
                 ", postedTime=" + postedTime.format(formatter) +
                 '}';
     }
