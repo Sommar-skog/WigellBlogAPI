@@ -1,10 +1,7 @@
 package com.example.WigellBlogAPI.dtos;
 
-/**
- * DTO for updating an existing blog post.
- * Contains only fields that are allowed to be updated — title, content, and ID (So that the blogPost can be found).
- * User ID and username are excluded and cannot be modified through this DTO.
- */
+
+ //DTO for updating an existing blog post. Contains only fields that are allowed to be updated
 
 public class UpdateBlogPostDTO {
 

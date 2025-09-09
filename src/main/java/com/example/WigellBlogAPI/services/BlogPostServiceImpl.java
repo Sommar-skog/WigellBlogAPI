@@ -89,7 +89,7 @@ public class BlogPostServiceImpl implements BlogPostService {
         validateOwnerOrAdmin(postToDelete.getUserId(),auth);
         blogPostRepository.delete(postToDelete);
 
-        return "Blog post with id " + blogPostId + " deleted successfully";
+        return "Blog post with ID " + blogPostId + " was successfully deleted";
     }
 
     @Override
