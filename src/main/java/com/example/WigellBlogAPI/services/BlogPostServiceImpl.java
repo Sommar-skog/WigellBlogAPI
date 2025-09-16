@@ -7,6 +7,7 @@ import com.example.WigellBlogAPI.dtos.UpdateBlogPostDTO;
 import com.example.WigellBlogAPI.entities.BlogPost;
 import com.example.WigellBlogAPI.repositories.BlogPostRepository;
 import com.example.WigellBlogAPI.utils.UserInfoUtil;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -18,11 +19,15 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Objects;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @Service
 public class BlogPostServiceImpl implements BlogPostService {
 
     private final BlogPostRepository blogPostRepository;
+
+    private static final Logger BlogPost_Logger = LogManager.getLogger("blogPostLogger");
 
     @Autowired
     public BlogPostServiceImpl(BlogPostRepository blogPostRepository) {
@@ -61,7 +66,8 @@ public class BlogPostServiceImpl implements BlogPostService {
         newBlogPost.setUsername(UserInfoUtil.getUsernameFromJwt(jwt));
         BlogPost savedBlogPost =  blogPostRepository.save(newBlogPost);
 
-        System.out.println("New blogPost saved to repository: " + newBlogPost);
+        //System.out.println("New blogPost saved to repository: " + newBlogPost);
+        BlogPost_Logger.info("New blogPost saved to repository: {}", newBlogPost);
 
         return new BlogPostDTO(savedBlogPost.getId(), savedBlogPost.getTitle(), savedBlogPost.getContent(), savedBlogPost.getUserId(),savedBlogPost.getUsername(),savedBlogPost.getPostedTime());
     }
