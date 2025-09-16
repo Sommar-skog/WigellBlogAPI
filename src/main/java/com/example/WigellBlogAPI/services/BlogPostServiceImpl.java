@@ -110,9 +110,6 @@ public class BlogPostServiceImpl implements BlogPostService {
     private void validateOwnerOrAdmin(String blogPostUserId, Authentication auth) {
         boolean isAdmin = UserInfoUtil.hasRoleFromAuthentication(auth,"wigellblog-admin");
         String sub = UserInfoUtil.getUserIdFromAuthentication(auth);
-        System.out.println("blogPostUserId: " + blogPostUserId);
-        System.out.println("isAdmin: " + isAdmin);
-        System.out.println("authenticated-sub: " + sub);
 
         if (!isAdmin) {
             if (!Objects.equals(blogPostUserId, sub)) {
