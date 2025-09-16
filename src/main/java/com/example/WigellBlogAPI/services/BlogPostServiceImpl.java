@@ -66,7 +66,6 @@ public class BlogPostServiceImpl implements BlogPostService {
         newBlogPost.setUsername(UserInfoUtil.getUsernameFromJwt(jwt));
         BlogPost savedBlogPost =  blogPostRepository.save(newBlogPost);
 
-        System.out.println("New blogPost saved to repository: " + newBlogPost);
         BlogPost_Logger.info("New blogPost saved to repository: {}", newBlogPost);
 
         return new BlogPostDTO(savedBlogPost.getId(), savedBlogPost.getTitle(), savedBlogPost.getContent(), savedBlogPost.getUserId(),savedBlogPost.getUsername(),savedBlogPost.getPostedTime());
