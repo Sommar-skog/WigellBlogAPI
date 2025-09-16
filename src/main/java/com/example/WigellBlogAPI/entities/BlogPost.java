@@ -16,10 +16,10 @@ public class BlogPost {
     @Column(nullable = false, length = 100)
     private String title;
 
-    @Column(columnDefinition = "CLOB", nullable = false) //"CLOB" - Texten kan bli hur lång som helst/ istället för length
+    @Column(columnDefinition = "CLOB", nullable = false)
     private String content;
 
-    @Column(nullable = false, length = 36) //sub alltid 36 tecken långt i keycloak
+    @Column(nullable = false, length = 36)
     private String userId;
 
     @Column(nullable = false,length = 50)
