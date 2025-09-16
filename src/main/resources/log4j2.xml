@@ -4,6 +4,7 @@
         <property name="consoleLayout">
             %style{%d{yyyy-MM-dd HH:mm:ss}}{blue} %highlight{%-5level} %style{%logger}{white} - %highlight{%style{%msg}{bold}}%n
         </property>
+
     </properties>
 
     <Appenders>
